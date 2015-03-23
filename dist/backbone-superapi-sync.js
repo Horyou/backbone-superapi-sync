@@ -1,4 +1,4 @@
-/*! backbone-superapi-sync - v0.0.0
+/*! backbone-superapi-sync - v0.2.0
  *  Release on: 2015-03-23
  *  Copyright (c) 2015 Stéphane Bachelier
  *  Licensed MIT */
@@ -20,12 +20,14 @@
 
 'use strict';
 
+// jscs:disable disallowQuotedKeysInObjects
 var methodMap = {
-  create: 'post',
-  update: 'put',
-  delete: 'delete',
-  read: 'get'
+  'create': 'post',
+  'update': 'put',
+  'delete': 'delete',
+  'read': 'get'
 };
+// jscs:enable disallowQuotedKeysInObjects
 
 Backbone.superapiSync = function (superapi) {
   return function (method, model, options) {
@@ -40,7 +42,9 @@ Backbone.superapiSync = function (superapi) {
       type: 'json'
     };
 
-    var req = superapi.sendRequest(type, url, JSON.stringify(options.attrs || model.toJSON(options)), params);
+    var data = method !== 'read' ? JSON.stringify(options.attrs || model.toJSON(options)) : {};
+
+    var req = superapi.sendRequest(type, url, data, params);
 
     req.end(function (res) {
       (!res.error ? options.success : options.error)(res.body || {});
