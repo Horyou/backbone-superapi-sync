@@ -1,6 +1,6 @@
 {
   "name": "backbone-superapi-sync",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The awesome javascript library",
   "main": "dist/backbone-superapi-sync.js",
   "author": {

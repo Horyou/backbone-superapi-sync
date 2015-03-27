@@ -1,5 +1,5 @@
-/*! backbone-superapi-sync - v0.2.0
- *  Release on: 2015-03-23
+/*! backbone-superapi-sync - v0.3.0
+ *  Release on: 2015-03-27
  *  Copyright (c) 2015 Stéphane Bachelier
  *  Licensed MIT */
 (function (root, factory) {
@@ -29,22 +29,24 @@ var methodMap = {
 };
 // jscs:enable disallowQuotedKeysInObjects
 
-Backbone.superapiSync = function (superapi) {
+Backbone.superapiSync = function (superapi, service) {
   return function (method, model, options) {
-    var type = methodMap[method];
+    var httpMethod = methodMap[method];
 
     // Default options, unless specified.
     _.defaults(options || (options = {}));
 
     // Ensure that we have a URL.
     var url = options.url ? options.url : _.result(model, 'url') || urlError();
+
     var params = {
-      type: 'json'
+      headers: _.defaults({}, service ? service.headers : {}, options.headers),
+      options: _.defaults({}, service ? service.options : {}, options.options)
     };
 
-    var data = method !== 'read' ? JSON.stringify(options.attrs || model.toJSON(options)) : {};
+    var data = method !== 'read' ? options.attrs || model.toJSON(options) : {};
 
-    var req = superapi.sendRequest(type, url, data, params);
+    var req = superapi.sendRequest(httpMethod, url, data, params);
 
     req.end(function (res) {
       (!res.error ? options.success : options.error)(res.body || {});
