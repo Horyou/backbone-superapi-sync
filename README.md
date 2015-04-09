@@ -98,6 +98,26 @@ req.end(function (res) {
 - data: the data to be sent with the request
 - params: is a hash with `headers` and `options` in the has of `superagent`. You might completly ignore this last field.
 
+## Error handlers
+
+`backbone-superapi-sync` provide two global error handler which are :
+ * `Backbone.superapiSync.onError(err)` called when an error is caught either in the request or in the callback (code error)
+ * `Backbone.superapiSync.onAbort()` called when a request is aborted
+
+By default these error handlers does nothing. You must override them to match your use case.
+
+It's as easy as :
+```javascript
+Backbone.superapiSync.onError = function (err) {
+  console.log(err);
+};
+```
+
+The error handler will be called with either a network or a code error:
+ - Cross Domain Error (network error)
+ - Timeout (network error)
+ - Runtime error in callback execution (code error)
+
 
 ## License
 
