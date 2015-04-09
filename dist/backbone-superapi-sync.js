@@ -1,5 +1,5 @@
-/*! backbone-superapi-sync - v0.3.0
- *  Release on: 2015-03-27
+/*! backbone-superapi-sync - v0.4.0
+ *  Release on: 2015-04-09
  *  Copyright (c) 2015 Stéphane Bachelier
  *  Licensed MIT */
 (function (root, factory) {
@@ -48,6 +48,10 @@ Backbone.superapiSync = function (superapi, service) {
 
     var req = superapi.sendRequest(httpMethod, url, data, params);
 
+    req.on('error', Backbone.superapiSync.onError);
+
+    req.on('abort', Backbone.superapiSync.onAbort);
+
     req.end(function (res) {
       (!res.error ? options.success : options.error)(res.body || {});
     });
@@ -56,6 +60,12 @@ Backbone.superapiSync = function (superapi, service) {
     return req.xhr;
   };
 };
+
+// jshint unused:false
+Backbone.superapiSync.onError = function (err) {};
+// jshint unused:true
+
+Backbone.superapiSync.onAbort = function () {};
 
 return Backbone.superapiSync;
 
