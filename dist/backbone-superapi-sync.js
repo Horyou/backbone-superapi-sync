@@ -1,5 +1,5 @@
-/*! backbone-superapi-sync - v0.4.0
- *  Release on: 2015-04-09
+/*! backbone-superapi-sync - v0.5.0
+ *  Release on: 2015-04-22
  *  Copyright (c) 2015 Stéphane Bachelier
  *  Licensed MIT */
 (function (root, factory) {
@@ -53,7 +53,15 @@ Backbone.superapiSync = function (superapi, service) {
     req.on('abort', Backbone.superapiSync.onAbort);
 
     req.end(function (res) {
-      (!res.error ? options.success : options.error)(res.body || {});
+      if (!res.error) {
+        options.success(model, res.body || {}, options);
+      }
+      else {
+        options.error(model, res.body || {}, options);
+
+        // passing res to error callback to ease any process
+        Backbone.superapiSync.onError(res);
+      }
     });
 
     model.trigger('request', model, req.xhr, options);
